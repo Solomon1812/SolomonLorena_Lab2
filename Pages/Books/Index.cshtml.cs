@@ -1,0 +1,34 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using Solomon_Lorena_Lab2.Data;
+using Solomon_Lorena_Lab2.Models;
+
+namespace Solomon_Lorena_Lab2.Pages.Books
+{
+    public class IndexModel : PageModel
+    {
+        private readonly Solomon_Lorena_Lab2.Data.Solomon_Lorena_Lab2Context _context;
+
+        public IndexModel(Solomon_Lorena_Lab2.Data.Solomon_Lorena_Lab2Context context)
+        {
+            _context = context;
+        }
+
+        public IList<Book> Book { get;set; } = default!;
+
+        //functia get pentru Index !
+        public async Task OnGetAsync() 
+        {
+            Book = await _context.Book
+            .Include(b => b.Publisher) // Include the related Publisher data
+            .ToListAsync();
+        }
+
+
+    }
+}
