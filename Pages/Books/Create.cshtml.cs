@@ -19,26 +19,27 @@ namespace Solomon_Lorena_Lab2.Pages.Books
             _context = context;
         }
 
+        [BindProperty]
+        public Book Book { get; set; } = new();
+
+        public SelectList PublisherSelectList { get; set; } = default!;
+
         public IActionResult OnGet()
         {
-            ViewData["PublisherID"] = new SelectList(_context.Set<Publisher>(), "ID", "PublisherName");
+            PublisherSelectList = new SelectList(_context.Publisher.OrderBy(p => p.PublisherName).ToList(), "ID", "PublisherName");
             return Page();
         }
 
-        [BindProperty]
-        public Book Book { get; set; } = default!;
-
-        // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
+                PublisherSelectList = new SelectList(_context.Publisher.OrderBy(p => p.PublisherName).ToList(), "ID", "PublisherName");
                 return Page();
             }
 
             _context.Book.Add(Book);
             await _context.SaveChangesAsync();
-
             return RedirectToPage("./Index");
         }
     }

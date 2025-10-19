@@ -27,4 +27,21 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<Solomon_Lorena_Lab2.Data.Solomon_Lorena_Lab2Context>();
+    context.Database.Migrate();
+
+    if (!context.Publisher.Any())
+    {
+        context.Publisher.AddRange(
+            new Solomon_Lorena_Lab2.Models.Publisher { PublisherName = "Humanitas" },
+            new Solomon_Lorena_Lab2.Models.Publisher { PublisherName = "ART" },
+            new Solomon_Lorena_Lab2.Models.Publisher { PublisherName = "Litera" }
+        );
+        context.SaveChanges();
+    }
+}
+
 app.Run();
