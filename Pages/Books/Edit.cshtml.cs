@@ -21,7 +21,15 @@ namespace Solomon_Lorena_Lab2.Pages.Books
         }
 
         [BindProperty]
-        public Book Book { get; set; } = default!;
+        public Book book { get; set; } = default!;
+
+        // Add this property to your EditModel class
+        [BindProperty]
+        public Book Book { get; set; }
+
+        public SelectList AuthorSelectList { get; set; } = default!;
+        public SelectList PublisherSelectList { get; set; } = default!;
+
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -30,14 +38,38 @@ namespace Solomon_Lorena_Lab2.Pages.Books
                 return NotFound();
             }
 
-            var book =  await _context.Book.FirstOrDefaultAsync(m => m.Id == id);
+            book = await _context.Book.Include(b => b.Author).Include(b => b.Publisher).FirstOrDefaultAsync(m => m.Id == id);
+
+            //var book =  await _context.Book.FirstOrDefaultAsync(m => m.Id == id);
             if (book == null)
             {
                 return NotFound();
             }
-            Book = book;
-            ViewData["PublisherID"] = new SelectList(_context.Set<Publisher>(), "ID", "PublisherName");
+            book = book;
+
+            PopulateSelectLists();
+            //ViewData["PublisherID"] = new SelectList(_context.Set<Publisher>(), "ID", "PublisherName");
+            //ViewData["AuthorID"] = new SelectList(_context.Set<Author>(), "ID", "FirstName");
+            //ViewData["AuthorID"] = new SelectList(_context.Set<Author>(), "ID", "LastName");
+
             return Page();
+        }
+
+
+        private void PopulateSelectLists()
+        {
+            var authors = _context.Set<Author>()
+                .OrderBy(a => a.LastName).ThenBy(a => a.FirstName)
+                .AsNoTracking().ToList();
+
+                AuthorSelectList = new SelectList(authors, "ID", "FullName"); //, book?.AuthorID
+            
+
+            var publishers = _context.Set<Publisher>()
+                .OrderBy(p => p.PublisherName)
+                .AsNoTracking().ToList();
+
+            PublisherSelectList = new SelectList(publishers, "ID", "PublisherName"); //, book?.PublisherID
         }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -49,7 +81,7 @@ namespace Solomon_Lorena_Lab2.Pages.Books
                 return Page();
             }
 
-            _context.Attach(Book).State = EntityState.Modified;
+            _context.Attach(book).State = EntityState.Modified;
 
             try
             {
@@ -57,7 +89,7 @@ namespace Solomon_Lorena_Lab2.Pages.Books
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!BookExists(Book.Id))
+                if (!BookExists(book.Id))
                 {
                     return NotFound();
                 }

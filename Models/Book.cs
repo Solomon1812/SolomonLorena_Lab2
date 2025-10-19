@@ -10,8 +10,12 @@ namespace Solomon_Lorena_Lab2.Models
 
         //Adnotari
         [Display(Name = "Book Title")]
-        public string Title { get; set; }
-        public string Author { get; set; }
+        public required string Title { get; set; } = string.Empty;   
+        
+        //public string Author { get; set; }
+        public int? AuthorID { get; set; } //pk
+        public Author? Author { get; set; } //navigation property
+
 
         //in dtb, entitatea se va genera ca si o coloana
         [Column(TypeName = "decimal(6, 2)")]
@@ -19,6 +23,7 @@ namespace Solomon_Lorena_Lab2.Models
         
         //adnotare pentru a seta tipul de data
         [DataType(DataType.Date)]
+        //[Range(typeof(DateTime), "1900-01-01", "2025-12-31", ErrorMessage = "Date out of bounds")]
         public DateTime PublishingDate { get; set; }
 
 

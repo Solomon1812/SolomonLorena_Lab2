@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Solomon_Lorena_Lab2.Data;
 using Solomon_Lorena_Lab2.Models;
 
-namespace Solomon_Lorena_Lab2.Pages.Books
+namespace Solomon_Lorena_Lab2.Pages.Authors
 {
     public class IndexModel : PageModel
     {
@@ -19,17 +19,11 @@ namespace Solomon_Lorena_Lab2.Pages.Books
             _context = context;
         }
 
-        public IList<Book> Book { get;set; } = default!;
+        public IList<Author> Author { get;set; } = default!;
 
-        //functia get pentru Index !
-        public async Task OnGetAsync() 
+        public async Task OnGetAsync()
         {
-            Book = await _context.Book
-            .Include(b => b.Publisher) // Include the related Publisher data
-            .Include(b => b.Author)    // Include the related Author data
-            .ToListAsync();
+            Author = await _context.Author.ToListAsync();
         }
-
-        
     }
 }
