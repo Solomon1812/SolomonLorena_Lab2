@@ -20,12 +20,9 @@ namespace Solomon_Lorena_Lab2.Pages.Books
             _context = context;
         }
 
+        // single property used by the Razor page and model binding
         [BindProperty]
-        public Book book { get; set; } = default!;
-
-        // Add this property to your EditModel class
-        [BindProperty]
-        public Book Book { get; set; }
+        public Book Book { get; set; } = default!;
 
         public SelectList AuthorSelectList { get; set; } = default!;
         public SelectList PublisherSelectList { get; set; } = default!;
@@ -38,20 +35,17 @@ namespace Solomon_Lorena_Lab2.Pages.Books
                 return NotFound();
             }
 
-            book = await _context.Book.Include(b => b.Author).Include(b => b.Publisher).FirstOrDefaultAsync(m => m.Id == id);
+            Book = await _context.Book
+                .Include(b => b.Author)
+                .Include(b => b.Publisher)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
-            //var book =  await _context.Book.FirstOrDefaultAsync(m => m.Id == id);
-            if (book == null)
+            if (Book == null)
             {
                 return NotFound();
             }
-            book = book;
 
             PopulateSelectLists();
-            //ViewData["PublisherID"] = new SelectList(_context.Set<Publisher>(), "ID", "PublisherName");
-            //ViewData["AuthorID"] = new SelectList(_context.Set<Author>(), "ID", "FirstName");
-            //ViewData["AuthorID"] = new SelectList(_context.Set<Author>(), "ID", "LastName");
-
             return Page();
         }
 
@@ -62,26 +56,25 @@ namespace Solomon_Lorena_Lab2.Pages.Books
                 .OrderBy(a => a.LastName).ThenBy(a => a.FirstName)
                 .AsNoTracking().ToList();
 
-                AuthorSelectList = new SelectList(authors, "ID", "FullName"); //, book?.AuthorID
-            
+            // use FullName for display, pass current Book.AuthorID as selected value
+            AuthorSelectList = new SelectList(authors, "ID", "FullName", Book?.AuthorID);
 
             var publishers = _context.Set<Publisher>()
                 .OrderBy(p => p.PublisherName)
                 .AsNoTracking().ToList();
 
-            PublisherSelectList = new SelectList(publishers, "ID", "PublisherName"); //, book?.PublisherID
+            PublisherSelectList = new SelectList(publishers, "ID", "PublisherName", Book?.PublisherID);
         }
 
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
+                PopulateSelectLists();
                 return Page();
             }
 
-            _context.Attach(book).State = EntityState.Modified;
+            _context.Attach(Book).State = EntityState.Modified;
 
             try
             {
@@ -89,7 +82,7 @@ namespace Solomon_Lorena_Lab2.Pages.Books
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!BookExists(book.Id))
+                if (!BookExists(Book.Id))
                 {
                     return NotFound();
                 }

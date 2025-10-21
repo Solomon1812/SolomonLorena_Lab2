@@ -38,7 +38,7 @@
 
             <div class="form-group">
                 <label asp-for="Book.PublisherID" class="control-label">Publisher</label>
-                <select asp-for="Book.PublisherID" class="form-control" asp-items="Model.PublisherSelectList">
+                <select asp-for="Book.PublisherID" class="form-control" asp-items="ViewBag.PublisherID">
                
                 </select>
                 <span asp-validation-for="Book.PublisherID" class="text-danger"></span>
