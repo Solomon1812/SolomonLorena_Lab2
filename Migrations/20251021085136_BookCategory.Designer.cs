@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Solomon_Lorena_Lab2.Data;
 
@@ -11,9 +12,11 @@ using Solomon_Lorena_Lab2.Data;
 namespace Solomon_Lorena_Lab2.Migrations
 {
     [DbContext(typeof(Solomon_Lorena_Lab2Context))]
-    partial class Solomon_Lorena_Lab2ContextModelSnapshot : ModelSnapshot
+    [Migration("20251021085136_BookCategory")]
+    partial class BookCategory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,7 +58,7 @@ namespace Solomon_Lorena_Lab2.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(6,2)");
+                        .HasColumnType("decimal(6, 2)");
 
                     b.Property<int?>("PublisherID")
                         .HasColumnType("int");

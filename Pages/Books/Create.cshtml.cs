@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Solomon_Lorena_Lab2.Pages.Books
 {
-    public class CreateModel : PageModel
+    public class CreateModel : BookCategoriesPageModel
     {
         private readonly Solomon_Lorena_Lab2.Data.Solomon_Lorena_Lab2Context _context;
 
@@ -21,7 +21,7 @@ namespace Solomon_Lorena_Lab2.Pages.Books
         }
 
         [BindProperty]
-        public Book Book { get; set; } = new() { Title = string.Empty };
+        public Book Book { get; set; }
 
         public SelectList PublisherSelectList { get; set; } = default!;
         public SelectList AuthorSelectList { get; set; } = default!;
@@ -33,6 +33,9 @@ namespace Solomon_Lorena_Lab2.Pages.Books
             //AuthorSelectList = new SelectList(_context.Author.OrderBy(p => p.FirstName).ToList(), "ID", "FirstName");
             //AuthorSelectList = new SelectList(_context.Author.OrderBy(p => p.LastName).ToList(), "ID", "LastName");
 
+            var book = new Book { Title = string.Empty }; // Set required property
+            book.BookCategories = new List<BookCategory>();
+            PopulateAssignedCategoryData(_context, book);
             return Page();
         }
 
@@ -54,7 +57,7 @@ namespace Solomon_Lorena_Lab2.Pages.Books
 
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(string[] selectedCategories)
         {
             if (!ModelState.IsValid)
             {
@@ -62,11 +65,36 @@ namespace Solomon_Lorena_Lab2.Pages.Books
                 //PublisherSelectList = new SelectList(_context.Publisher.OrderBy(p => p.PublisherName).ToList(), "ID", "PublisherName");
                 //AuthorSelectList = new SelectList(_context.Author.OrderBy(p => p.FirstName).ToList(), "ID", "FirstName");
                 //AuthorSelectList = new SelectList(_context.Author.OrderBy(p => p.LastName).ToList(), "ID", "LastName");
-
+                PopulateAssignedCategoryData(_context, Book);
                 return Page();
             }
 
-            _context.Book.Add(Book);
+            var newBook = new Book { Title = Book.Title };
+
+            // Add selected categories (if any)
+            if (selectedCategories != null)
+            {
+                newBook.BookCategories = new List<BookCategory>();
+
+                foreach (var cat in selectedCategories)
+                {
+                    var catToAdd = new BookCategory
+                    {
+                        CategoryID = int.Parse(cat)
+                    };
+                    newBook.BookCategories.Add(catToAdd);
+                }
+            }
+
+            // Transfer data from the bound Book to newBook
+            newBook.Title = Book.Title;
+            newBook.AuthorID = Book.AuthorID;
+            newBook.Price = Book.Price;
+            newBook.PublishingDate = Book.PublishingDate;
+            newBook.PublisherID = Book.PublisherID;
+
+            // ADD the composed newBook (which includes BookCategories), not the bound Book
+            _context.Book.Add(newBook);
             await _context.SaveChangesAsync();
             return RedirectToPage("./Index");
         }

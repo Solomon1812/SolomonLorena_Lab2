@@ -1,6 +1,5 @@
-﻿@page
+﻿@page "/"
 @model Solomon_Lorena_Lab2.Pages.Books.IndexModel
-
 
 @{
     ViewData["Title"] = "Index";
@@ -30,13 +29,21 @@
             <th>
                 @Html.DisplayNameFor(model => model.Book[0].Publisher.PublisherName)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Book[0].BookCategories)
+            </th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model.Book) { 
     //parcurge colectia de entitati tip book
     //@model 
-        <tr>
+    string selectedRow = "";
+    if(item.Id == Model.BookID)
+            {
+                selectedRow = "table success";
+            }
+            <tr class="@selectedRow">
             <td> 
                 @Html.DisplayFor(modelItem => item.Title)
             </td>
@@ -52,6 +59,15 @@
 
             <td>
                 @Html.DisplayFor(modelItem => item.Publisher.PublisherName)
+            </td>
+
+            <td>
+            @{
+                foreach (var category in item.BookCategories)
+                {
+                    @category.Category.ID @: @category.Category.CategoryName <br/>
+                }
+             }
             </td>
 
             <td>

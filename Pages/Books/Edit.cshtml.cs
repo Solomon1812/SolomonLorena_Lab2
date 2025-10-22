@@ -11,7 +11,7 @@ using Solomon_Lorena_Lab2.Models;
 
 namespace Solomon_Lorena_Lab2.Pages.Books
 {
-    public class EditModel : PageModel
+    public class EditModel : BookCategoriesPageModel
     {
         private readonly Solomon_Lorena_Lab2.Data.Solomon_Lorena_Lab2Context _context;
 
@@ -38,6 +38,8 @@ namespace Solomon_Lorena_Lab2.Pages.Books
             Book = await _context.Book
                 .Include(b => b.Author)
                 .Include(b => b.Publisher)
+                .Include(b => b.BookCategories).ThenInclude(b => b.Category)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (Book == null)
@@ -45,6 +47,7 @@ namespace Solomon_Lorena_Lab2.Pages.Books
                 return NotFound();
             }
 
+            PopulateAssignedCategoryData(_context, Book);
             PopulateSelectLists();
             return Page();
         }
@@ -66,34 +69,49 @@ namespace Solomon_Lorena_Lab2.Pages.Books
             PublisherSelectList = new SelectList(publishers, "ID", "PublisherName", Book?.PublisherID);
         }
 
-        public async Task<IActionResult> OnPostAsync()
+
+        public async Task<IActionResult> OnPostAsync(int? id, string[] selectedCategories)
         {
-            if (!ModelState.IsValid)
+
+            if (id == null)
             {
-                PopulateSelectLists();
-                return Page();
+                return NotFound();
             }
 
-            _context.Attach(Book).State = EntityState.Modified;
+            //se va include Author conform cu sarcina de la lab 2
+            var bookToUpdate = await _context.Book
+            .Include(i => i.Publisher)
+            .Include(i => i.BookCategories)
+            .ThenInclude(i => i.Category)
+            .FirstOrDefaultAsync(s => s.Id == id);
 
-            try
+            if (bookToUpdate == null)
             {
+                return NotFound();
+            }
+
+            //se va modifica AuthorID conform cu sarcina de la lab 2
+            if (await TryUpdateModelAsync<Book>(
+            bookToUpdate,
+            "Book",
+            i => i.Title, i => i.AuthorID,
+            i => i.Price, i => i.PublishingDate, i => i.PublisherID))
+            {
+                UpdateBookCategories(_context, selectedCategories, bookToUpdate);
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!BookExists(Book.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return RedirectToPage("./Index");
             }
 
-            return RedirectToPage("./Index");
+            //Apelam UpdateBookCategories pentru a aplica informatiile din checkboxuri la entitatea Books care
+            //este editata
+            UpdateBookCategories(_context, selectedCategories, bookToUpdate);
+            PopulateAssignedCategoryData(_context, bookToUpdate);
+            PopulateSelectLists();
+
+            return Page();
         }
+
+
 
         private bool BookExists(int id)
         {

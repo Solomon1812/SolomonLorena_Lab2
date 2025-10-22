@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Cryptography.Pkcs;
 using System.Security.Policy;
 
 namespace Solomon_Lorena_Lab2.Models
@@ -18,9 +19,12 @@ namespace Solomon_Lorena_Lab2.Models
 
 
         //in dtb, entitatea se va genera ca si o coloana
-        [Column(TypeName = "decimal(6, 2)")]
+        [Column(TypeName = "decimal(6,2)")]
+        [Range(0, 200.99)]
+        [DataType(DataType.Currency)]
+        [DisplayFormat(DataFormatString = "{0:F2}", ApplyFormatInEditMode = true)]
         public decimal Price { get; set; }
-        
+
         //adnotare pentru a seta tipul de data
         [DataType(DataType.Date)]
         //[Range(typeof(DateTime), "1900-01-01", "2025-12-31", ErrorMessage = "Date out of bounds")]
@@ -33,5 +37,7 @@ namespace Solomon_Lorena_Lab2.Models
 
         public Publisher? Publisher { get; set; } 
         //navigation property
+
+        public ICollection<BookCategory> BookCategories { get; set; } = new List<BookCategory>();
     }
 }
