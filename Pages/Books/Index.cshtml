@@ -10,14 +10,30 @@
 <p>
     <a asp-page="Create">Create New</a>
 </p>
+
+<form asp-page="./Index" method="get">
+    <div class ="form-actions no-color">
+        <p>
+            Find by Book Title or Author Name:
+            <input type="text" name="SearchString" value="@Model.CurrentFilter" />
+            <input type="submit" value="Search" class="btn btn-primary" />
+            <a asp-page="./Index">Back to full List</a>
+        </p>
+    </div>
+</form>
+
 <table class="table">
     <thead>
         <tr>
             <th>
+                <a asp-page="./Index" asp-route-sortOrder="@Model.TitleSort">
                 @Html.DisplayNameFor(model => model.Book[0].Title)
+                </a>
             </th>
             <th>
+               <a asp-page="./Index" asp-route-sortOrder="@Model.AuthorSort">
                 @Html.DisplayNameFor(model => model.Book[0].Author.FullName)
+               </a>
             </th>
 
             <th>
@@ -35,7 +51,7 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Book) { 
+@foreach (var item in Model.BookD.Books) { 
     //parcurge colectia de entitati tip book
     //@model 
     string selectedRow = "";
