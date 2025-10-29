@@ -7,8 +7,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Solomon_Lorena_Lab2.Data;
 using Solomon_Lorena_Lab2.Models;
-using Solomon_Lorena_Lab2.ViewModels;
-
 
 namespace Solomon_Lorena_Lab2.Pages.Publishers
 {
@@ -23,30 +21,9 @@ namespace Solomon_Lorena_Lab2.Pages.Publishers
 
         public IList<Publisher> Publisher { get;set; } = default!;
 
-        public PublisherIndexData PublisherData { get; set; }
-        public int PublisherID { get; set; }
-        public int BookID { get; set; }
-
-        public async Task OnGetAsync(int? id, int? bookID)
+        public async Task OnGetAsync()
         {
-            //Publisher = await _context.Publisher.ToListAsync();
-
-            PublisherData = new PublisherIndexData();
-            PublisherData.Publishers = await _context.Publisher
-            .Include(i => i.Books)
-            .ThenInclude(c => c.Author)
-            .OrderBy(i => i.PublisherName)
-            .ToListAsync();
-
-            if (id != null)
-            {
-                PublisherID = id.Value;
-                Publisher publisher = PublisherData.Publishers
-                .Where(i => i.ID == id.Value).Single(); 
-                //where returneaza colectie; single = filtrare un singur publisher
-                PublisherData.Books = publisher.Books;
-            }
-
+            Publisher = await _context.Publisher.ToListAsync();
         }
     }
 }

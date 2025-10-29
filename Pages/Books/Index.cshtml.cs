@@ -25,21 +25,11 @@ namespace Solomon_Lorena_Lab2.Pages.Books
         public int BookID { get; set; } 
         public int CategoryID { get; set; }
 
-        public string TitleSort { get; set; }  
-        public string AuthorSort { get; set; }
-
-        public string CurrentFilter { get; set; }
-
 
         //functia get pentru Index !
-        public async Task OnGetAsync(int? id, int? categoryID, string sortOrder, string searchString) 
+        public async Task OnGetAsync(int? id, int? categoryID) 
         {
             BookD = new BookData();
-
-            TitleSort = String.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
-            AuthorSort = sortOrder == "author" ? "author_desc" : "author";
-
-            CurrentFilter = searchString;
 
             Book = await _context.Book
             .Include(b => b.Publisher) // Include the related Publisher data
@@ -50,17 +40,6 @@ namespace Solomon_Lorena_Lab2.Pages.Books
             .OrderBy(b=> b.Title)
             .ToListAsync();
 
-            BookD.Books = Book;
-
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                Book = Book.Where(s =>
-                        (s.Author.FirstName != null && s.Author.FirstName.Contains(searchString)) ||
-                        (s.Author.LastName != null && s.Author.LastName.Contains(searchString)) ||
-                        (s.Title != null && s.Title.Contains(searchString))
-                    ).ToList();
-            }
-
             if (id != null)
             {
                 BookID = id.Value;
@@ -68,27 +47,6 @@ namespace Solomon_Lorena_Lab2.Pages.Books
                     .Where(i => i.Id == id.Value).Single();
                 BookD.Categories = book.BookCategories.Select(s => s.Category);
             }
-
-            switch (sortOrder)
-            {
-                case "title_desc":
-                    BookD.Books = BookD.Books.OrderByDescending(s => s.Title);
-                    break;
-
-                case "author_desc":
-                    BookD.Books = BookD.Books.OrderByDescending(s => s.Author != null ? s.Author.FullName : string.Empty);
-                    break;
-
-                case "author":
-                    BookD.Books = BookD.Books.OrderBy(s => s.Author != null ? s.Author.FullName : string.Empty);
-                    break;
-
-                default:
-                    BookD.Books = BookD.Books.OrderBy(s => s.Title);
-                    break;
-
-            }
-
         }
 
         
