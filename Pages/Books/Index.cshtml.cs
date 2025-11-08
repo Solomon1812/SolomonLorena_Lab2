@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Solomon_Lorena_Lab2.Data;
 using Solomon_Lorena_Lab2.Models;
@@ -25,11 +26,17 @@ namespace Solomon_Lorena_Lab2.Pages.Books
         public int BookID { get; set; } 
         public int CategoryID { get; set; }
 
+        public string TitleSort { get; set; }
+        public string AuthorSort { get; set; }
+
 
         //functia get pentru Index !
-        public async Task OnGetAsync(int? id, int? categoryID) 
+        public async Task OnGetAsync(int? id, int? categoryID, D, string sortOrder)
         {
             BookD = new BookData();
+
+            TitleSort = String.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
+            AuthorSort = sortOrder == "author" ? "author_desc" : "author";
 
             Book = await _context.Book
             .Include(b => b.Publisher) // Include the related Publisher data
@@ -37,7 +44,7 @@ namespace Solomon_Lorena_Lab2.Pages.Books
             .Include(b => b.BookCategories)
             .ThenInclude(b => b.Category)
             .AsNoTracking()
-            .OrderBy(b=> b.Title)
+            .OrderBy(b => b.Title)
             .ToListAsync();
 
             if (id != null)
@@ -47,8 +54,24 @@ namespace Solomon_Lorena_Lab2.Pages.Books
                     .Where(i => i.Id == id.Value).Single();
                 BookD.Categories = book.BookCategories.Select(s => s.Category);
             }
-        }
 
+            switch (sortOrder)
+            {
+                case "title_desc":
+                    BookD.Books = BookD.Books.OrderByDescending(s => s.Title);
+                    break;
+                case "author_desc":
+                    BookD.Books = BookD.Books.OrderByDescending(s => s.Author.FullName);
+                    break;
+                case "author":
+                    BookD.Books = BookD.Books.OrderBy(s => s.Author.FullName);
+                    break;
+                default:
+                    BookD.Books = BookD.Books.OrderBy(s => s.Title);
+                    break;
+
+            }
+        }
         
     }
 }
