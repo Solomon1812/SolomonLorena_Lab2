@@ -31,7 +31,7 @@ namespace Solomon_Lorena_Lab2.Pages.Books
 
 
         //functia get pentru Index !
-        public async Task OnGetAsync(int? id, int? categoryID, D, string sortOrder)
+        public async Task OnGetAsync(int? id, int? categoryID, string sortOrder)
         {
             BookD = new BookData();
 
@@ -44,8 +44,10 @@ namespace Solomon_Lorena_Lab2.Pages.Books
             .Include(b => b.BookCategories)
             .ThenInclude(b => b.Category)
             .AsNoTracking()
-            .OrderBy(b => b.Title)
+            //.OrderBy(b => b.Title)
             .ToListAsync();
+
+            BookD.Books = Book;
 
             if (id != null)
             {
@@ -58,16 +60,16 @@ namespace Solomon_Lorena_Lab2.Pages.Books
             switch (sortOrder)
             {
                 case "title_desc":
-                    BookD.Books = BookD.Books.OrderByDescending(s => s.Title);
+                    BookD.Books = BookD.Books.OrderByDescending(s => s.Title).ToList();
                     break;
                 case "author_desc":
-                    BookD.Books = BookD.Books.OrderByDescending(s => s.Author.FullName);
+                    BookD.Books = BookD.Books.OrderByDescending(s => s.Author.FullName).ToList();
                     break;
                 case "author":
-                    BookD.Books = BookD.Books.OrderBy(s => s.Author.FullName);
+                    BookD.Books = BookD.Books.OrderBy(s => s.Author.FullName).ToList();
                     break;
                 default:
-                    BookD.Books = BookD.Books.OrderBy(s => s.Title);
+                    BookD.Books = BookD.Books.OrderBy(s => s.Title).ToList();
                     break;
 
             }

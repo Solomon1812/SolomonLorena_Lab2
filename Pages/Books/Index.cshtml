@@ -39,9 +39,9 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Book) { 
+@foreach (var item in Model.BookD.Books) { 
     //parcurge colectia de entitati tip book
-    //@model 
+
     string selectedRow = "";
     if(item.Id == Model.BookID)
             {
