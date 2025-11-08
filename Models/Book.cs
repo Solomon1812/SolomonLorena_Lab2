@@ -39,5 +39,10 @@ namespace Solomon_Lorena_Lab2.Models
         //navigation property
 
         public ICollection<BookCategory> BookCategories { get; set; } = new List<BookCategory>();
+
+        public ICollection<Borrowing>? Borrowings { get; set; }
+
+
+
     }
 }
