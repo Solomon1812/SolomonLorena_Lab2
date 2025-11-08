@@ -35,9 +35,17 @@ namespace Solomon_Lorena_Lab2.Pages.Borrowings
             {
                 return NotFound();
             }
+
+            var bookList = _context.Book.Include(b => b.Author)
+                .Select(x => new
+                {
+                    x.Id,
+                    BookFullName = x.Title + " - " + x.Author.LastName + " " + x.Author.FirstName
+                });
+
             Borrowing = borrowing;
-           ViewData["BookID"] = new SelectList(_context.Book, "Id", "Id");
-           ViewData["MemberID"] = new SelectList(_context.Member, "ID", "ID");
+            ViewData["BookID"] = new SelectList(bookList, "Id", "BookFullName");
+            ViewData["MemberID"] = new SelectList(_context.Member, "ID", "FullName");
             return Page();
         }
 
