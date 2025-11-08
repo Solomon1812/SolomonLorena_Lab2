@@ -29,14 +29,18 @@ namespace Solomon_Lorena_Lab2.Pages.Books
         public string TitleSort { get; set; }
         public string AuthorSort { get; set; }
 
+        public string CurrentFilter { get; set; }
+
 
         //functia get pentru Index !
-        public async Task OnGetAsync(int? id, int? categoryID, string sortOrder)
+        public async Task OnGetAsync(int? id, int? categoryID, string sortOrder, string searchString)
         {
             BookD = new BookData();
 
             TitleSort = String.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
             AuthorSort = sortOrder == "author" ? "author_desc" : "author";
+
+            CurrentFilter = searchString;
 
             Book = await _context.Book
             .Include(b => b.Publisher) // Include the related Publisher data
@@ -55,6 +59,11 @@ namespace Solomon_Lorena_Lab2.Pages.Books
                 Book book = BookD.Books
                     .Where(i => i.Id == id.Value).Single();
                 BookD.Categories = book.BookCategories.Select(s => s.Category);
+            }
+
+            if (!String.IsNullOrEmpty(searchString)) 
+            { 
+                BookD.Books = BookD.Books.Where(s => s.Author.FirstName.Contains(searchString) || s.Author.LastName.Contains(searchString) || s.Title.Contains(searchString)); 
             }
 
             switch (sortOrder)
