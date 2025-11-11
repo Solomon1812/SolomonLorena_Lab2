@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace Solomon_Lorena_Lab2.Pages.Books
 {
+    [Authorize(Roles = "Admin")] // Restrict access to Admin role
     public class CreateModel : BookCategoriesPageModel
     {
         private readonly Solomon_Lorena_Lab2.Data.Solomon_Lorena_Lab2Context _context;
