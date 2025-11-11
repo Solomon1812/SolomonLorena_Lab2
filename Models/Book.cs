@@ -20,7 +20,7 @@ namespace Solomon_Lorena_Lab2.Models
 
         //in dtb, entitatea se va genera ca si o coloana
         [Column(TypeName = "decimal(6,2)")]
-        [Range(0, 200.99)]
+        [Range(0.01, 500)]
         [DataType(DataType.Currency)]
         [DisplayFormat(DataFormatString = "{0:F2}", ApplyFormatInEditMode = true)]
         public decimal Price { get; set; }
