@@ -4,6 +4,13 @@ using Solomon_Lorena_Lab2.Data;
 using Microsoft.AspNetCore.Identity;
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminPolicy", policy =>
+   policy.RequireRole("Admin"));
+});
+
+
 // Add services to the container.
 builder.Services.AddRazorPages(options =>
 {
@@ -13,6 +20,8 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AllowAnonymousToPage("/Books/Index");
     options.Conventions.AllowAnonymousToPage("/Books/Details");
     //allowing anonymous access to Index and Details pages in Books folder
+
+    options.Conventions.AuthorizeFolder("/Members", "AdminPolicy"); //members area restricted to Admins only
 });
 
 builder.Services.AddDbContext<Solomon_Lorena_Lab2Context>(options =>

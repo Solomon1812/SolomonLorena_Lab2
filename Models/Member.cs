@@ -6,10 +6,15 @@ namespace Solomon_Lorena_Lab2.Models
     {
         public int ID { get; set; }
 
+        [RegularExpression(@"^[A-Z]+[a-z\s]*$")]
+        [StringLength(30, MinimumLength = 3)]
         public string? FirstName { get; set; }
 
+        [RegularExpression(@"^[A-Z]+[a-z\s]*$")]
+        [StringLength(30, MinimumLength = 3)]
         public string? LastName { get; set; }
 
+        [StringLength(70)]
         public string? Adress { get; set; }
 
         public string Email { get; set; }
