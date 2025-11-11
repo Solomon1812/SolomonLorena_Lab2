@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Solomon_Lorena_Lab2.Data;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace Solomon_Lorena_Lab2.Pages.Publishers
 {
+    [Authorize(Roles = "Admin")] // Restrict access to Admin role
     public class IndexModel : PageModel
     {
         private readonly Solomon_Lorena_Lab2.Data.Solomon_Lorena_Lab2Context _context;

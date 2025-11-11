@@ -11,6 +11,8 @@ namespace Solomon_Lorena_Lab2.Models
 
         //Adnotari
         [Display(Name = "Book Title")]
+        [StringLength(150, MinimumLength = 3)]
+        [Required()]
         public required string Title { get; set; } = string.Empty;   
         
         //public string Author { get; set; }

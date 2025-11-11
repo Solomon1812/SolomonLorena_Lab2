@@ -15,7 +15,10 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AuthorizeFolder("/Books");
-    //for Authorizing the Books folder  - no login, no access
+    options.Conventions.AuthorizeFolder("/Publishers");
+    options.Conventions.AuthorizeFolder("/Categories");
+    //for Authorizing the folders  - no login, no access
+
 
     options.Conventions.AllowAnonymousToPage("/Books/Index");
     options.Conventions.AllowAnonymousToPage("/Books/Details");

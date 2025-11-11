@@ -19,7 +19,7 @@ namespace Solomon_Lorena_Lab2.Models
 
         public string Email { get; set; }
 
-        [RegularExpression(@"^\(?([0-9]{4})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{3})$", ErrorMessage = "Telefonul trebuie sa fie de forma '0722-123-123' sau '0722.123.123' sau '0722 123 123'")]
+        [RegularExpression(@"^0([0-9]{3})[-. ]?([0-9]{3})[-. ]?([0-9]{3})$", ErrorMessage = "Telefonul trebuie să fie de forma '0722-123-123', '0722.123.123' sau '0722 123 123' și obligatoriu să înceapă cu cifra '0'.")] 
         public string? Phone { get; set; }
 
         [Display(Name = "Full Name")]
