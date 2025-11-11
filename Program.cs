@@ -10,22 +10,22 @@ builder.Services.AddDbContext<Solomon_Lorena_Lab2Context>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Solomon_Lorena_Lab2Context") ?? throw new InvalidOperationException("Connection string 'Solomon_Lorena_Lab2Context' not found.")));
 
 
-// 1. Register the new Identity Context (from Lab 5, Step 16)
+// 1. Register the new Identity Context ( Lab 5, Step 16)
 builder.Services.AddDbContext<LibraryIdentityContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Solomon_Lorena_Lab2Context") ?? throw new InvalidOperationException("Connection string 'Solomon_Lorena_Lab2Context' not found.")));
 
-// 2. Configure Identity to use the new Context (from Lab 5, Step 16)
+// 2. Configure Identity to use the new Context (Lab 5, Step 16)
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 {
     // Temporarily disable confirmation for testing registration flow
     options.SignIn.RequireConfirmedAccount = false;
 
-    // --- RELAXED PASSWORD REQUIREMENTS (Temporary for testing) ---
+    // --- RELAXED PASSWORD REQUIREMENTS  ---
     options.Password.RequireDigit = false;          // No number required
     options.Password.RequireLowercase = false;      // No lowercase required
     options.Password.RequireUppercase = false;      // No uppercase required
     options.Password.RequireNonAlphanumeric = false; // No special character required
-    options.Password.RequiredLength = 6;            // Minimum length of 6 characters
+    options.Password.RequiredLength = 4;            // Minimum length of 4 characters
 })
     .AddEntityFrameworkStores<LibraryIdentityContext>();
 
